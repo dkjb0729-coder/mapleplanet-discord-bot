@@ -1,25 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-import os
 
-WEBHOOK_URL = os.environ["DISCORD_WEBHOOK"]
+url = "https://mapleplanet.co.kr/board/update"
 
-URL = "https://mapleplanet.co.kr/board/update"
+r = requests.get(
+    url,
+    headers={"User-Agent": "Mozilla/5.0"}
+)
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
+print("상태:", r.status_code)
 
-response = requests.get(URL, headers=headers)
+soup = BeautifulSoup(r.text, "html.parser")
 
-print("상태코드:", response.status_code)
-print("URL:", response.url)
-print("응답길이:", len(response.text))
-
-payload = {
-    "content": f"✅ GitHub Actions 테스트 성공\n상태코드: {response.status_code}"
-}
-
-requests.post(WEBHOOK_URL, json=payload)
-
-print("웹훅 전송 완료")
+for a in soup.find_all("a", href=True)[:50]:
+    print(a.get("href"))
