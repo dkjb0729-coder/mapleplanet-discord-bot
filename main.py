@@ -1,23 +1,29 @@
+import cloudscraper
 import requests
-from bs4 import BeautifulSoup
 import os
 
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK"]
 
-url = "https://mapleplanet.co.kr/board/update"
-
-r = requests.get(
-    url,
-    headers={"User-Agent": "Mozilla/5.0"}
+scraper = cloudscraper.create_scraper(
+    browser={
+        "browser": "chrome",
+        "platform": "windows",
+        "mobile": False
+    }
 )
 
-msg = r.text[:1800]
+url = "https://mapleplanet.co.kr/board/update"
+
+r = scraper.get(url)
+
+print("상태코드:", r.status_code)
+print("응답길이:", len(r.text))
 
 requests.post(
     WEBHOOK_URL,
     json={
-        "content": f"```{msg}```"
+        "content": f"상태코드: {r.status_code}\n응답길이: {len(r.text)}\n\n```{r.text[:1000]}```"
     }
 )
 
-print("완료")
+print("전송 완료")
