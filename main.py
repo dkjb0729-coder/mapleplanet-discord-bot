@@ -1,16 +1,15 @@
 import requests
-from bs4 import BeautifulSoup
 
 url = "https://mapleplanet.co.kr/board/update"
 
-r = requests.get(
-    url,
-    headers={"User-Agent": "Mozilla/5.0"}
-)
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "Accept": "text/html,application/xhtml+xml",
+    "Accept-Language": "ko-KR,ko;q=0.9",
+    "Referer": "https://mapleplanet.co.kr/"
+}
 
-print("상태:", r.status_code)
+r = requests.get(url, headers=headers)
 
-soup = BeautifulSoup(r.text, "html.parser")
-
-for a in soup.find_all("a", href=True)[:50]:
-    print(a.get("href"))
+print(r.status_code)
+print(r.text[:500])
